@@ -9,13 +9,13 @@ Studies data abstractions (e.g., stacks, queues, lists, trees, graphs) and their
 
 ## Assignment Structure :
 
-1. C++ fundamentals
-2. Array doubling and dynamic memory
-3. Linked List : Communication between towers
-4. Linked List(cont.)
-5. Stacks and Queues
-6. Binary Search Trees
-7. Binary Search Trees II
-8. Graphs
-9. Grpahs(cont.)
+1. [C++ fundamentals](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%201)
+2. [Array doubling and dynamic memory](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%202)
+3. [Linked List: Communication between towers](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%203)
+4. [Linked List(cont.)](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%204)
+5. [Stacks and Queues](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%205)
+6. [Binary Search Trees](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%206)
+7. [Binary Search Trees II](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%207)
+8. [Graphs](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%208)
+9. [Grpahs(cont.)](https://github.com/MuvvalaKaran/summer_20_data_structures/tree/master/Assignments/Assignment%209)
 
