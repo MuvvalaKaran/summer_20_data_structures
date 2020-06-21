@@ -75,6 +75,18 @@ void printList(const Park parks[], int length){
     }
 }
 
+void dump_struct_array(Park parks[], int length,int min_area, string o_file_name){
+    ofstream output_file_handle(o_file_name);
+
+    for (int k=0; k < length; k++){
+
+        if (parks[k].area > min_area){
+            output_file_handle << parks[k].parkname << ", " << parks[k].state 
+            << ", " << parks[k].area << endl; 
+        } 
+    }
+}
+
 // argc is the total # of arguments
 // argv is an array storing all the arguments passed
 int main(int argc, char const *argv[]){
@@ -137,96 +149,52 @@ int main(int argc, char const *argv[]){
             string p_name = "";
             string p_state ="";
             string p_area = "";
-            
-            
-            // stringstream ss;
             // variable to keep track of the number of lines
             int iternum = 0;
             int idx = 0;
-            // parse through each line
-            // while (!file_handle.eof()){
-            //     int i;
-            //     iternum++;
-            //     getline(file_handle, tmp_S);
-            //     for (i=0; i<tmp_S.length(); i++){
-            //         if (tmp_S[i] == ','){
-            //             for (int j = 0; j < i; j++){
-            //                 p_name = p_name + tmp_S[j];
-            //             }
-            //         }
-            //         cout << p_name;
-            //         i++;
-            //         for (int j = i; j < i+2; j++){
-            //             p_state = p_state + tmp_S[j];
-            //         }
-            //         cout << p_state;
-            //         i++;
-            //         for (int j = i+2; j < tmp_S.length(); j++){
-            //             p_area = p_area + tmp_S[j];
-            //         }
-            //         i = tmp_S.length();
-            //         cout << p_area;
-            //     }
-
-            //     if (p_area != ""){
-            //         // addPark(p_array, p_name, p_state, stoi(p_area), iternum);
-            //     }
-            //     p_name = "";
-            //     p_state = "";
-            //     p_area = "";
-            // }
-            int i = 0;
             while(getline(file_handle, tmp_S, '\n')){
-                while (i < 3){
-                    getline(file_handle, tmp_S, ',');
-                    cout << "curent string : "<< tmp_S << endl;
-                    i++;
-                }   
-                i = 0;
+                // cout << "current_string : "<< tmp_S << endl;
+                iternum++;
+                // since I could not split it according to built in function I will manually do it
+                for (int i =0; i < tmp_S.length(); i++){
+                    if(tmp_S[i] != ',' && idx == 0){
+                        p_name = p_name + tmp_S[i];
+                        if (tmp_S[i+1] == ','){
+                            idx++;
+                            i++;
+                        }   
+                    }
+                    else if(tmp_S[i] != ',' && idx == 1){
+                        p_state = p_state + tmp_S[i];
+                        if (tmp_S[i+1] == ','){
+                            idx++;
+                            i++;
+                        }
+                    }
+
+                    else if(tmp_S[i] != ',' && idx == 2){
+                        p_area = p_area + tmp_S[i];
+                        if (!tmp_S[i + 1]){
+                            idx = 0;
+                            break;
+                        }
+                        
+                    }
+                }
                 
-                // use stringstream to break words
-                // stringstream s(tmp_S);
-                // string word;
-                // int count = 0;
-                // while (s >> word){
-                //     count++;
-                //     cout << count << word << " ";
-                // }
-                // cout << endl;
+                addPark(p_array, p_name, p_state, stoi(p_area), iternum);
                 
-                // first we get a p_name then p_state and then p_area
-                // if (idx == 0){
-                //     // save p_name
-                //     p_name = tmp_S;
-                //     idx++;
-                //     cout << p_name << " " ;
-                //     continue;
-                // }
-                // if (idx == 1)
-                // {
-                //     getline(file_handle, tmp_S, ',');
-                //     p_state = tmp_S;
-                //     idx++;
-                //     cout << p_state << " ";
-                //     continue;
-                // }
-                // if (idx == 2)
-                // {
-                //     // p_area = stoi(tmp_S);
-                //     // getline(file_handle, tmp_S, '\n');
-                //     // p_area = stoi(tmp_S);
-                //     idx = 0;
-                //     cout << tmp_S <<endl;
-                //     continue;
-                // }
-                
-                
+                p_name = "";
+                p_state = "";
+                p_area = "";
+    
             }
 
+            // function print the array of struct
+            printList(p_array, iternum);
 
-            // printList(p_array, iternum);
-
-
+            // dump the array into an output file
+            dump_struct_array(p_array, iternum, il_min_area, op_file_name);
             return 0;
             
     }
