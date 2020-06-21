@@ -131,7 +131,7 @@ int main(int argc, char const *argv[]){
 
             return 0;
         case 2:
-           
+            ip_file_name = "/home/karan-m/Documents/learning_hub/learn c++/summer_20_CSCI_2270/Assignments/Assignment 1/park.csv";
             ifstream file_handle(ip_file_name);
             string tmp_S;
             string p_name = "";
@@ -144,39 +144,87 @@ int main(int argc, char const *argv[]){
             int iternum = 0;
             int idx = 0;
             // parse through each line
-            while (!file_handle.eof()){
-                int i;
-                iternum++;
-                getline(file_handle, tmp_S);
-                for (i=0; i<tmp_S.length(); i++){
-                    if (tmp_S[i] == ','){
-                        for (int j = 0; j < i; j++){
-                            p_name = p_name + tmp_S[j];
-                        }
-                    }
-                    cout << p_name;
-                    i++;
-                    for (int j = i; j < i+2; j++){
-                        p_state = p_state + tmp_S[j];
-                    }
-                    cout << p_state;
-                    i++;
-                    for (int j = i+2; j < tmp_S.length(); j++){
-                        p_area = p_area + tmp_S[j];
-                    }
-                    i = tmp_S.length();
-                    cout << p_area;
-                }
+            // while (!file_handle.eof()){
+            //     int i;
+            //     iternum++;
+            //     getline(file_handle, tmp_S);
+            //     for (i=0; i<tmp_S.length(); i++){
+            //         if (tmp_S[i] == ','){
+            //             for (int j = 0; j < i; j++){
+            //                 p_name = p_name + tmp_S[j];
+            //             }
+            //         }
+            //         cout << p_name;
+            //         i++;
+            //         for (int j = i; j < i+2; j++){
+            //             p_state = p_state + tmp_S[j];
+            //         }
+            //         cout << p_state;
+            //         i++;
+            //         for (int j = i+2; j < tmp_S.length(); j++){
+            //             p_area = p_area + tmp_S[j];
+            //         }
+            //         i = tmp_S.length();
+            //         cout << p_area;
+            //     }
 
-                if (p_area != ""){
-                    // addPark(p_array, p_name, p_state, stoi(p_area), iternum);
-                }
-                p_name = "";
-                p_state = "";
-                p_area = "";
+            //     if (p_area != ""){
+            //         // addPark(p_array, p_name, p_state, stoi(p_area), iternum);
+            //     }
+            //     p_name = "";
+            //     p_state = "";
+            //     p_area = "";
+            // }
+            int i = 0;
+            while(getline(file_handle, tmp_S, '\n')){
+                while (i < 3){
+                    getline(file_handle, tmp_S, ',');
+                    cout << "curent string : "<< tmp_S << endl;
+                    i++;
+                }   
+                i = 0;
+                
+                // use stringstream to break words
+                // stringstream s(tmp_S);
+                // string word;
+                // int count = 0;
+                // while (s >> word){
+                //     count++;
+                //     cout << count << word << " ";
+                // }
+                // cout << endl;
+                
+                // first we get a p_name then p_state and then p_area
+                // if (idx == 0){
+                //     // save p_name
+                //     p_name = tmp_S;
+                //     idx++;
+                //     cout << p_name << " " ;
+                //     continue;
+                // }
+                // if (idx == 1)
+                // {
+                //     getline(file_handle, tmp_S, ',');
+                //     p_state = tmp_S;
+                //     idx++;
+                //     cout << p_state << " ";
+                //     continue;
+                // }
+                // if (idx == 2)
+                // {
+                //     // p_area = stoi(tmp_S);
+                //     // getline(file_handle, tmp_S, '\n');
+                //     // p_area = stoi(tmp_S);
+                //     idx = 0;
+                //     cout << tmp_S <<endl;
+                //     continue;
+                // }
+                
+                
             }
 
-            printList(p_array, iternum);
+
+            // printList(p_array, iternum);
 
 
             return 0;
