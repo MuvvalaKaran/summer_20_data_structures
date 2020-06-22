@@ -2,7 +2,9 @@
 # include <fstream>
 # include <iostream>
 # include <string>
-
+# include <sstream>
+# include <tuple>
+# define debug true
 using namespace std;
 
 struct wordItem {
@@ -14,7 +16,7 @@ void getStopWords(const char *ignoreWordsFileName, string ignoreWords[]){
     //  A function to read a words in ignoreWords file and store them in the @ignoreWords array.
     // There will be exactly 50 words in this array. 
 
-    ifstream stop_words_handle ("ignoreWordsFileName");
+    ifstream stop_words_handle (ignoreWordsFileName);
     
     // throw warning if error in opening file
     if(stop_words_handle.fail()){
@@ -95,17 +97,121 @@ void printNext10(wordItem uniqueWords[], int N, int totalNumWords){
     }
 }
 
+tuple<bool, signed int> checkIfWordInWordArray(wordItem wordArray[], string word, int length){
+    // a helper method to check if @word is present in @wordArray
+    // NOTE: All algo you are writing are super ineffecient with linear implementation. Maybe improve the implementation in future commits. 
+    for (int ind = 0; ind < length; ind++){
+        if (wordArray[ind].word == word){
+            return {true, ind};
+        }
+    }
+    return {false,-1};
+}
+
+void addWordToWordArray(wordItem wordArray[], string word, int length){
+    // a helper function to add words to @wordArray. If the word already exists then increment the count
+    // @ length : the number of elements in the array
+    // check if the word exists or not
+    bool flag = false;
+    int ind; 
+    tuple<bool, int > check = checkIfWordInWordArray(wordArray, word, length);
+
+    if (get<0>(check)){
+        // word already exist in the array so we only increment the count
+        wordArray[get<1>(check)].count++;
+    }
+    else{
+        length++;
+        wordArray[length].word = word;
+        wordArray[length].count = 1; 
+    }
+}
+
 
 int main(int argc,char const* argv[]){
 
-    // N tell us the how many of the most frequent words to print
+    // N tells us the how many of the most frequent words to print
     // ip_file_name - name of the input file
     // ignore_file_name - name of the file containing words to be ignored 
-
-    // throw warning if correct number of arguments are not passed
     if (argc != 4){
-        cout << "Usage: Assignment2Solution <number of words> <inputfilename.txt> \ 
-        <ignoreWordsfilename.txt>" << endl; 
+        cout << "Usage: Assignment2Solution <number of words> <inputfilename.txt> <ignoreWordsfilename.txt>" << endl; 
+        return 0;
+    }
+
+    string N = argv[1];
+    string ip_file_name = argv[2];
+    const char *ignore_file_name = argv[3];
+    // throw warning if correct number of arguments are not passed
+    if (debug){
+        cout << N << " " << ip_file_name << " " << ignore_file_name << endl;
+    }
+    
+    string ignoreWords[50];
+    getStopWords(ignore_file_name, ignoreWords);
+
+    // array to hold the words fom the @ip_file_name file
+    int array_size = 100;
+    struct wordItem word_arr[array_size];
+
+    // read words from @ip_file_name file
+    ifstream ifile (ip_file_name);
+    string line;
+    string word;
+    int * wordCount = 0;
+
+    int count_array_doubling = 1;
+    // array doubling : when an array is full we increase its size, then we make the size of
+    // thew new size of the array equal to twice its original size - every it doubles it size - exponential increase
+    
+    while(!ifile.eof()){
+        getline(ifile, line);
+        stringstream ss(line);
+        while(ss >> word){
+            // wordCount++;
+            // check if array is full 
+            if (*wordCount == array_size){
+                count_array_doubling++;
+                // tmp array to hold the old value 
+                struct wordItem tmp_word_arr[array_size];
+
+                // copy all old values
+                for (int k = 0; k < array_size; k++){
+                    tmp_word_arr[k] = word_arr[k];
+                }
+
+                // create an array of size = 2 * array_size
+                array_size = 2* array_size;
+                struct wordItem word_arr[array_size];
+
+                // iterate over all the previous elements and store it in the new variable
+                for (int k = 0; k < array_size/2; k++){
+                    word_arr[k] = tmp_word_arr[k];
+                }
+            }
+            // if the word was not encounter before then increment count 
+            // tuple <bool, int> c = checkIfWordInWordArray(word_arr, word, wordCount); 
+            
+            // if (!get<0>(c)){
+            //     wordCount++;
+            // }
+            // add words to the array
+            addWordToWordArray(word_arr, word, *wordCount);
+        }
+
+        // print the # of times array is doubled
+        cout << "Array doubled : " << count_array_doubling << endl;
+
+        // print the # of unique words
+        cout << "Unique non-common words: " << endl;
+
+        // print the total non-common words
+        cout << "Total non-common words: " << endl;
+
+        // print the probability of the words
+        printNext10(NULL, NULL, NULL);
+
+        
+    
     }
 
     return 0;
