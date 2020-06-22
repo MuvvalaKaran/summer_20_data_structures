@@ -4,7 +4,8 @@
 # include <string>
 # include <sstream>
 # include <tuple>
-# define debug true
+
+# define debug false
 using namespace std;
 
 struct wordItem {
@@ -12,21 +13,25 @@ struct wordItem {
     int count ;
 };
 
+string get_current_dir(){
+    return "/home/karan-m/Documents/learning_hub/learn c++/summer_20_CSCI_2270/Assignments/Assignment 2/";
+}
+
 void getStopWords(const char *ignoreWordsFileName, string ignoreWords[]){
     //  A function to read a words in ignoreWords file and store them in the @ignoreWords array.
     // There will be exactly 50 words in this array. 
 
-    ifstream stop_words_handle (ignoreWordsFileName);
+    ifstream stop_words_handle (get_current_dir() + ignoreWordsFileName);
     
     // throw warning if error in opening file
     if(stop_words_handle.fail()){
-        cout << "Faile to open " << ignoreWordsFileName << endl;
+        cout << "Failed to open " << ignoreWordsFileName << endl;
     }   
 
     // variable to store the word written on each line
     string line;
     int id = 0; 
-    while(!stop_words_handle.eof()){
+    while(id < 50){
         getline(stop_words_handle, line);
         ignoreWords[id] = line;
         id++;
@@ -34,7 +39,7 @@ void getStopWords(const char *ignoreWordsFileName, string ignoreWords[]){
 
     // throw warning if you encounter more than the pre defined number of words in the file
     if (id > 50){
-        cout << "The" << ignoreWordsFileName << "contains more that 50 words \n";
+        cout << "The file " << ignoreWordsFileName << " contains more that 50 words in it\n";
     } 
 }
 
@@ -71,19 +76,36 @@ void arraySort(wordItem uniqueWords[], int length){
         // for the current element, compare with all the elements after it
         for (int j = i + 1; j < length; j++){
             // if the next element is bigger than the current element
-            if (uniqueWords[i].count < uniqueWords[j].count){
-                wordItem curr_word = uniqueWords[i];
-                uniqueWords[i] = uniqueWords[j];
-
-                // insert the curr element at i + 1  and shift everything else to the right
-
-                for (int k = i+1; k < length; k++){
-                    wordItem next_word = uniqueWords[k+1];
-                    uniqueWords[k] = curr_word;
-                    curr_word = next_word;
-                }
+            if (uniqueWords[i].count > uniqueWords[j].count){
+                wordItem tmp_word = uniqueWords[j];
+                uniqueWords[j] = uniqueWords[i];
+                uniqueWords[i] = tmp_word;
             }
         }
+    }
+}
+
+void reverseArray(wordItem array[], int length){
+    // wordItem *pointer1 = array;
+
+    // wordItem *pointer2 = array + length - 1;
+
+    wordItem temp;
+    // while (pointer1 < pointer2){
+    //     *temp = *pointer1;
+    //     *pointer1 = *pointer2;
+    //     *pointer2 = *temp;
+    //     *pointer1++;
+    //     *pointer2--;
+    // }
+    int j = length - 1;
+    int i = 0;
+    while (i < j){
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+        i++;
+        j--;
     }
 }
 
@@ -108,23 +130,59 @@ tuple<bool, signed int> checkIfWordInWordArray(wordItem wordArray[], string word
     return {false,-1};
 }
 
-void addWordToWordArray(wordItem wordArray[], string word, int length){
+bool checkWordInIgnoreArray(string ignoreWords[], string word){
+
+    for(int j = 0; j < 50; j++){
+        if (ignoreWords[j] == word){
+            return true;
+        }
+    }
+    return false;
+}
+
+int getTotalNonCommonWords(wordItem array[], int length){
+
+    int sum = 0;
+    for (int k = 0; k < length; k++){
+        sum += array[k].count;
+    }
+
+    return sum;
+
+}
+
+void addWordToWordArray(wordItem wordArray[],string ignoreWords[], string word, int *length){
     // a helper function to add words to @wordArray. If the word already exists then increment the count
     // @ length : the number of elements in the array
     // check if the word exists or not
-    bool flag = false;
-    int ind; 
-    tuple<bool, int > check = checkIfWordInWordArray(wordArray, word, length);
+    // bool flag = false;
+    // int ind; 
 
-    if (get<0>(check)){
-        // word already exist in the array so we only increment the count
-        wordArray[get<1>(check)].count++;
+    if (!checkWordInIgnoreArray(ignoreWords, word)){
+        tuple<bool, int > check = checkIfWordInWordArray(wordArray, word, *length);
+
+        if (get<0>(check)){
+            // word already exist in the array so we only increment the count
+            wordArray[get<1>(check)].count++;
+        }
+        else{
+            wordArray[*length].word = word;
+            wordArray[*length].count = 1;
+            *length = *length + 1; 
+        }
     }
-    else{
-        length++;
-        wordArray[length].word = word;
-        wordArray[length].count = 1; 
+}
+
+void arrayDoubling(wordItem *&orgArray, int &size, int scale=2){
+    size = size * scale;
+    wordItem * tmpArray = new wordItem[size];
+
+    for (int i = 0; i< size/2 ; i++){
+        tmpArray[i] = orgArray[i]; 
     }
+
+    delete [] orgArray;
+    orgArray = tmpArray;
 }
 
 
@@ -133,17 +191,29 @@ int main(int argc,char const* argv[]){
     // N tells us the how many of the most frequent words to print
     // ip_file_name - name of the input file
     // ignore_file_name - name of the file containing words to be ignored 
-    if (argc != 4){
-        cout << "Usage: Assignment2Solution <number of words> <inputfilename.txt> <ignoreWordsfilename.txt>" << endl; 
-        return 0;
-    }
 
-    string N = argv[1];
-    string ip_file_name = argv[2];
-    const char *ignore_file_name = argv[3];
-    // throw warning if correct number of arguments are not passed
+    string N;
+    string ip_file_name;
+    const char * ignore_file_name;
+
     if (debug){
-        cout << N << " " << ip_file_name << " " << ignore_file_name << endl;
+        N = "10";
+        ip_file_name = "Tom_Sawyer.txt";
+        ignore_file_name = "ignoreWords.txt";
+    }
+    else{
+        if (argc != 4){
+            cout << "Usage: Assignment2Solution <number of words> <inputfilename.txt> <ignoreWordsfilename.txt>" << endl; 
+            return 0;
+        }
+        N = argv[1];
+        ip_file_name = argv[2];
+        ignore_file_name = argv[3];
+        
+        // throw warning if correct number of arguments are not passed
+        if (debug){
+            cout << N << " " << ip_file_name << " " << ignore_file_name << endl;
+        }
     }
     
     string ignoreWords[50];
@@ -151,13 +221,15 @@ int main(int argc,char const* argv[]){
 
     // array to hold the words fom the @ip_file_name file
     int array_size = 100;
-    struct wordItem word_arr[array_size];
+    wordItem * unique_arr = new wordItem[array_size];
 
     // read words from @ip_file_name file
-    ifstream ifile (ip_file_name);
+    ifstream ifile (get_current_dir() + ip_file_name);
     string line;
     string word;
-    int * wordCount = 0;
+    int totalWordCount = 0;
+    int wordCount = 0;
+    int *ptr_wordCount = &wordCount;
 
     int count_array_doubling = 1;
     // array doubling : when an array is full we increase its size, then we make the size of
@@ -167,52 +239,47 @@ int main(int argc,char const* argv[]){
         getline(ifile, line);
         stringstream ss(line);
         while(ss >> word){
-            // wordCount++;
+            totalWordCount++;
             // check if array is full 
-            if (*wordCount == array_size){
+            if (wordCount == array_size){
                 count_array_doubling++;
-                // tmp array to hold the old value 
-                struct wordItem tmp_word_arr[array_size];
-
-                // copy all old values
-                for (int k = 0; k < array_size; k++){
-                    tmp_word_arr[k] = word_arr[k];
-                }
-
-                // create an array of size = 2 * array_size
-                array_size = 2* array_size;
-                struct wordItem word_arr[array_size];
-
-                // iterate over all the previous elements and store it in the new variable
-                for (int k = 0; k < array_size/2; k++){
-                    word_arr[k] = tmp_word_arr[k];
-                }
+                arrayDoubling(unique_arr, array_size);
             }
-            // if the word was not encounter before then increment count 
-            // tuple <bool, int> c = checkIfWordInWordArray(word_arr, word, wordCount); 
-            
-            // if (!get<0>(c)){
-            //     wordCount++;
-            // }
-            // add words to the array
-            addWordToWordArray(word_arr, word, *wordCount);
+            // add word to the array
+            addWordToWordArray(unique_arr, ignoreWords , word, &wordCount);
         }
+    }
 
-        // print the # of times array is doubled
+    // print the # of times array is doubled
         cout << "Array doubled : " << count_array_doubling << endl;
 
         // print the # of unique words
-        cout << "Unique non-common words: " << endl;
+        cout << "Unique non-common words: "<< wordCount << endl;
+
+        // print the total number of words
+        cout << "Total number of words: " << totalWordCount << endl;
 
         // print the total non-common words
-        cout << "Total non-common words: " << endl;
+        int nonCommonWordsCount = getTotalNonCommonWords(unique_arr, wordCount);
+        cout << "Total non-common words" << nonCommonWordsCount << endl;
+        // unsorted output
+        ofstream  write_un_handle ("unsorted_output.txt");
+        for (int j = 0 ; j < wordCount; j++){
+            write_un_handle << unique_arr[j].word << " , " << unique_arr[j].count << endl;
+        }
+
+        // sort them according to the highest frequency 
+        arraySort(unique_arr, wordCount);
+        reverseArray(unique_arr, wordCount);
+
+        // dump unique array to check the sort function
+        ofstream  write_handle ("sort_output.txt");
+        for (int j = 0 ; j < wordCount; j++){
+            write_handle << unique_arr[j].word << " , " << unique_arr[j].count << endl;
+        }
 
         // print the probability of the words
-        printNext10(NULL, NULL, NULL);
-
-        
-    
-    }
+        printNext10(unique_arr, stoi(N), nonCommonWordsCount);
 
     return 0;
 }
