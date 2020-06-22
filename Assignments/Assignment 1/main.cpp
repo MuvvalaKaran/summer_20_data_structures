@@ -15,9 +15,7 @@ struct Park {
 // problem 1 
 
 int insertIntoSortedArray(int *myArray, int numEntries, int newValue){
-    // do something
-
-    // variable to hold the # of elements in an array
+     // variable to hold the # of elements in an array
     int len ;
     int bigger_value;
     // int tmp_value;

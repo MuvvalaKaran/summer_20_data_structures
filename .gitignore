@@ -1,2 +1,5 @@
 # ignore vscode generated files
 .vscode
+
+# I dont want to commmit changes made in Labs directory 
+Labs/
