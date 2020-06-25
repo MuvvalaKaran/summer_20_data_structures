@@ -4,8 +4,9 @@
 # include <string>
 # include <sstream>
 # include <tuple>
-
+// flag to enter the debug when we do not ask the user inputs!
 # define debug false
+
 using namespace std;
 
 struct wordItem {
@@ -86,18 +87,8 @@ void arraySort(wordItem uniqueWords[], int length){
 }
 
 void reverseArray(wordItem array[], int length){
-    // wordItem *pointer1 = array;
-
-    // wordItem *pointer2 = array + length - 1;
-
+    // A helper method to rever the given array of wordItem
     wordItem temp;
-    // while (pointer1 < pointer2){
-    //     *temp = *pointer1;
-    //     *pointer1 = *pointer2;
-    //     *pointer2 = *temp;
-    //     *pointer1++;
-    //     *pointer2--;
-    // }
     int j = length - 1;
     int i = 0;
     while (i < j){
@@ -113,9 +104,10 @@ void printNext10(wordItem uniqueWords[], int N, int totalNumWords){
     // a function to print the NEXT 10 words starting from the index @N from the sorted array @uniqueWords
     cout << "Probability of next 10 words from rank " << N << endl;
     cout << "---------------------------------------------" << endl;
+    cout.precision(4);
     for (int ind = N; ind < N +10; ind++){
         float prob_of_occ = (float) uniqueWords[ind].count/totalNumWords;
-        cout << prob_of_occ << " - " << uniqueWords[ind].word << endl;
+        cout << fixed << prob_of_occ << " - " << uniqueWords[ind].word << endl;
     }
 }
 
@@ -251,35 +243,35 @@ int main(int argc,char const* argv[]){
     }
 
     // print the # of times array is doubled
-        cout << "Array doubled : " << count_array_doubling << endl;
+    cout << "Array doubled : " << count_array_doubling << endl;
 
-        // print the # of unique words
-        cout << "Unique non-common words: "<< wordCount << endl;
+    // print the # of unique words
+    cout << "Unique non-common words: "<< wordCount << endl;
 
-        // print the total number of words
-        cout << "Total number of words: " << totalWordCount << endl;
+    // print the total number of words
+    cout << "Total number of words: " << totalWordCount << endl;
 
-        // print the total non-common words
-        int nonCommonWordsCount = getTotalNonCommonWords(unique_arr, wordCount);
-        cout << "Total non-common words" << nonCommonWordsCount << endl;
-        // unsorted output
-        ofstream  write_un_handle ("unsorted_output.txt");
-        for (int j = 0 ; j < wordCount; j++){
-            write_un_handle << unique_arr[j].word << " , " << unique_arr[j].count << endl;
-        }
+    // print the total non-common words
+    int nonCommonWordsCount = getTotalNonCommonWords(unique_arr, wordCount);
+    cout << "Total non-common words" << nonCommonWordsCount << endl;
+    // unsorted output
+    ofstream  write_un_handle ("unsorted_output.txt");
+    for (int j = 0 ; j < wordCount; j++){
+        write_un_handle << unique_arr[j].word << " , " << unique_arr[j].count << endl;
+    }
 
-        // sort them according to the highest frequency 
-        arraySort(unique_arr, wordCount);
-        reverseArray(unique_arr, wordCount);
+    // sort them according to the highest frequency 
+    arraySort(unique_arr, wordCount);
+    reverseArray(unique_arr, wordCount);
 
-        // dump unique array to check the sort function
-        ofstream  write_handle ("sort_output.txt");
-        for (int j = 0 ; j < wordCount; j++){
-            write_handle << unique_arr[j].word << " , " << unique_arr[j].count << endl;
-        }
+    // dump unique array to check the sort function
+    ofstream  write_handle ("sort_output.txt");
+    for (int j = 0 ; j < wordCount; j++){
+        write_handle << unique_arr[j].word << " , " << unique_arr[j].count << endl;
+    }
 
-        // print the probability of the words
-        printNext10(unique_arr, stoi(N), nonCommonWordsCount);
+    // print the probability of the words
+    printNext10(unique_arr, stoi(N), nonCommonWordsCount);
 
     return 0;
 }
