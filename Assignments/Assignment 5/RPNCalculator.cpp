@@ -7,6 +7,20 @@ RPNCalculator::RPNCalculator(){
 
 RPNCalculator::~RPNCalculator(){
     // pop everything off the stack and set stack head to NULL
+    Operand * node = stackHead;
+    Operand *tmp_node;
+
+    while (node->next != nullptr){
+        tmp_node = node;
+        delete node;
+        node = tmp_node->next;
+    }
+    delete node;
+    delete tmp_node;
+
+    // setting stackhead to null
+    stackHead = NULL;
+
 }
 
 bool RPNCalculator::isEmpty(){
@@ -21,6 +35,12 @@ bool RPNCalculator::isEmpty(){
 
 void RPNCalculator::push(float num){
     // A function to insert a new node with value @num onto the top of the stack
+    // Operand * tmp = stackHead;
+    
+    Operand* new_node = new Operand;
+    new_node->number = num;
+    new_node->next = stackHead;
+    stackHead = new_node;
 }
 
 void RPNCalculator::pop(){
@@ -28,6 +48,12 @@ void RPNCalculator::pop(){
     if (isEmpty){
         cout << "Stack empty, cannot pop an item" << endl;
         return;
+    }
+    else{
+
+        Operand *tmp = stackHead;
+        stackHead = tmp->next;
+        delete tmp;
     }
 
 
@@ -39,12 +65,44 @@ Operand* RPNCalculator::peek(){
         cout << "Stack empty, cannot peek" << endl;
         return nullptr;
     }
+    else{
+        return stackHead;
+    }
 }
 
 Operand* RPNCalculator::getStackHead(){
     // a getter method to return the pointer to the stack head
+
+    return stackHead;
 }
 
 bool RPNCalculator::compute(string symbol){
+    // if operation is done succesfully they return true else false
+    // symbol should be either " + " or " * " else throw error. 
+    if (symbol != "+" or symbol != "*"){
+        cout << "err: invalid operation";
+        return false;
+    }
+    else{
 
+        Operand * first;
+        Operand * second;
+
+        if (stackHead == nullptr or stackHead->next == nullptr){
+            cout << "err: not enought operands" << endl;
+            return false;
+        }
+
+        first = stackHead;
+        second = stackHead->next;
+
+        // call pop twice
+        pop();
+        pop();
+
+        double val = (symbol == "+") ? (first->number + second->number) : (first->number * second->number); 
+
+        // push this number to the stack
+        push(val);
+    }
 }
