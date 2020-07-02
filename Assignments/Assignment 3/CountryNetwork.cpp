@@ -14,6 +14,22 @@ CountryNetwork::CountryNetwork(){
   head = NULL;
 }
 
+CountryNetwork::~CountryNetwork(){
+  Country * node = head;
+  Country *tmp_node;
+  // lets one by one delete the nodes 
+  while (node->next != nullptr){
+    
+    tmp_node = node;
+    cout << "Deleting node :" << node->name << endl;
+    delete node;
+    node = tmp_node->next;
+  }
+  cout << "Deleting node: "<< node->name << endl;
+  delete node;
+  delete tmp_node;
+}
+
 
 void CountryNetwork::insertCountry(Country* previous, string countryName){
   // A function to insert a new country with name @CountryNmae in the Linked List after the country pointed
@@ -78,26 +94,29 @@ Country* CountryNetwork::searchNetwork(string countryName){
 }
 
 void CountryNetwork::transmitMsg(string receiver, string msg){
-  Country *node = new Country();
+  Country *node = head;
 
-  if (head = NULL){
+  if (head == NULL){
     cout << "Empty list" << endl;
     return ;
   }
 
   bool find_flag = false;
   // int counter = 0;
-  while (node->next != nullptr && node->name == receiver){
+  while (node->next != nullptr && node->name != receiver){
     find_flag = true;
     node->message = msg;
     node->numberMessages++;
-    // counter++;
+    cout << node->name << "[ # messages received: " << 
+    node->numberMessages << "] received:" << node->message << endl;
     node = node->next;
   }
 
   if (!find_flag){
     cout << "Country not found" << endl;
   }
+
+  // delete node;
 }
 
 void CountryNetwork::printPath(){
@@ -126,4 +145,6 @@ void CountryNetwork::printPath(){
   cout << node->name << " -> " << "NULL" << endl;
 
   cout << "===" << endl;
+
+  // delete node;
 }
