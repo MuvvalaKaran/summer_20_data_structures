@@ -11,7 +11,7 @@
 
 
 CountryNetwork::CountryNetwork(){
-  CountryNetwork::head = NULL;
+  head = NULL;
 }
 
 
@@ -55,14 +55,14 @@ void CountryNetwork::insertCountry(Country* previous, string countryName){
 void CountryNetwork::loadDefaultSetup(){
   // a function to add a default of countrie 
 
-  insertCountry(nullptr, "United_States");
+  insertCountry(nullptr, "United States");
   insertCountry(searchNetwork("United States"), "Canada");
   insertCountry(searchNetwork("Canada"), "Brazil");
   insertCountry(searchNetwork("Brazil"), "India");
   insertCountry(searchNetwork("India"), "China");
   insertCountry(searchNetwork("China"), "Australia");
   searchNetwork("Australia")->next = nullptr;
-
+  printPath();
 }
 
 Country* CountryNetwork::searchNetwork(string countryName){
@@ -86,16 +86,16 @@ void CountryNetwork::transmitMsg(string receiver, string msg){
   }
 
   bool find_flag = false;
-  int counter = 0;
+  // int counter = 0;
   while (node->next != nullptr && node->name == receiver){
     find_flag = true;
     node->message = msg;
-    node->numberMessages = counter;
-    counter++;
+    node->numberMessages++;
+    // counter++;
     node = node->next;
   }
 
-  if (find_flag){
+  if (!find_flag){
     cout << "Country not found" << endl;
   }
 }
@@ -114,6 +114,7 @@ void CountryNetwork::printPath(){
  
  if (head == NULL){
    cout << "nothing in path" << endl;
+   cout << "===" << endl;
    return ;
  }
 
