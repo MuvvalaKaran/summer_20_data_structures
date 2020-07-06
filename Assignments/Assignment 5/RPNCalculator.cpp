@@ -2,7 +2,7 @@
 using namespace std;
 
 RPNCalculator::RPNCalculator(){
-    stackHead = nullptr;
+    stackHead = NULL;
 }
 
 RPNCalculator::~RPNCalculator(){
@@ -10,7 +10,7 @@ RPNCalculator::~RPNCalculator(){
     Operand * node = stackHead;
     Operand *tmp_node;
 
-    while (node->next != nullptr){
+    while (node->next != NULL){
         tmp_node = node;
         delete node;
         node = tmp_node->next;
@@ -19,14 +19,15 @@ RPNCalculator::~RPNCalculator(){
     delete tmp_node;
 
     // setting stackhead to null
-    stackHead = NULL;
+    // stackHead = NULL;
+    delete stackHead;
 
 }
 
 bool RPNCalculator::isEmpty(){
     // A function that return true if the stack is empty
 
-    if (stackHead == nullptr){
+    if (stackHead == NULL){
         return true;
     }
 
@@ -45,7 +46,7 @@ void RPNCalculator::push(float num){
 
 void RPNCalculator::pop(){
     // if the stack is empty throw error else delete the top most item from the stack
-    if (isEmpty){
+    if (isEmpty()){
         cout << "Stack empty, cannot pop an item" << endl;
         return;
     }
@@ -55,52 +56,44 @@ void RPNCalculator::pop(){
         stackHead = tmp->next;
         delete tmp;
     }
-
-
 }
 
 Operand* RPNCalculator::peek(){
     // if the stack is empty throw error else return a pointer to the top of the stack
-    if (isEmpty){
+    if (isEmpty()){
         cout << "Stack empty, cannot peek" << endl;
-        return nullptr;
+        return NULL;
     }
     else{
         return stackHead;
     }
 }
 
-Operand* RPNCalculator::getStackHead(){
-    // a getter method to return the pointer to the stack head
-
-    return stackHead;
-}
-
 bool RPNCalculator::compute(string symbol){
     // if operation is done succesfully they return true else false
     // symbol should be either " + " or " * " else throw error. 
-    if (symbol != "+" or symbol != "*"){
+    if (symbol != "+" and symbol != "*"){
         cout << "err: invalid operation";
         return false;
     }
     else{
 
-        Operand * first;
-        Operand * second;
+        Operand first;
+        Operand second;
 
         if (stackHead == nullptr or stackHead->next == nullptr){
             cout << "err: not enought operands" << endl;
             return false;
         }
 
-        first = stackHead;
-        second = stackHead->next;
+        first = *stackHead;
+        second = *stackHead->next;
 
         // call pop twice
         pop();
         pop();
 
-        double val = (symbol == "+") ? (first->number + second->number) : (first->number * second->number); 
+        double val = (symbol == "+") ? (first.number + second.number) : (first.number * second.number); 
 
         // push this number to the stack
         push(val);

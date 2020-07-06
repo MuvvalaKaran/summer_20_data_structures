@@ -1,4 +1,4 @@
-# include "RPNCalculator.hpp"
+# include "RPNCalculator.cpp"
 
 using namespace std;
 
@@ -18,21 +18,17 @@ bool isNumber(string s)
     return true;
 }
 
-bool checkValidity(RPNCalculator stack);
-
-int main(int argc,char* argv[]){
+int main(int argc, char* argv[]){
     
     // instantiate a stack of type RPNCalculator
     RPNCalculator stk;
+    string s;
 
     cout << "Enter the operators and operands ('+', '*') in a postfinc format" << endl;
-    cin.ignore();
-    string s;
+    // cin.ignore();
     getline(cin, s);
-    while (s != "s"){
+    while (true){
         // push the operator/operand to the stack and keep doing so until the user enters "="
-        
-        
         if (isNumber(s)){
             stk.push(stof(s));
             // getline(cin, s);
@@ -48,31 +44,17 @@ int main(int argc,char* argv[]){
             }
 
             // check if the expression is invalid
-            else if (checkValidity){
+            else if (stk.getStackHead()->next != NULL){
                 cout << "Invalid Expression" << endl;
                 return -1;
             }
 
             else{
-                cout <<  stk.getStackHead()->number << endl;
+                cout <<  stk.peek()->number << endl;
                 return 0;
             }
         }
+        getline(cin, s);
     }
 }
-
-bool checkVaidity(RPNCalculator stack){
-    // pop anc check if stack is empty if yes then push and return true else push return false
-    
-    Operand * tmp_node = stack.getStackHead();
-    stack.pop();
-
-    if (stack.isEmpty()){
-        stack.push(tmp_node->number);
-        return true;
-    }
-    else{
-        stack.push(tmp_node->number);
-        return false;
-    }
 
