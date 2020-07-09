@@ -7,20 +7,9 @@ RPNCalculator::RPNCalculator(){
 
 RPNCalculator::~RPNCalculator(){
     // pop everything off the stack and set stack head to NULL
-    Operand * node = stackHead;
-    Operand *tmp_node;
-
-    while (node->next != NULL){
-        tmp_node = node;
-        delete node;
-        node = tmp_node->next;
+    while (!isEmpty()){
+        pop();
     }
-    delete node;
-    delete tmp_node;
-
-    // setting stackhead to null
-    // stackHead = NULL;
-    delete stackHead;
 
 }
 
@@ -36,12 +25,21 @@ bool RPNCalculator::isEmpty(){
 
 void RPNCalculator::push(float num){
     // A function to insert a new node with value @num onto the top of the stack
-    // Operand * tmp = stackHead;
     
-    Operand* new_node = new Operand;
-    new_node->number = num;
-    new_node->next = stackHead;
-    stackHead = new_node;
+    if (!isEmpty()){
+        Operand* new_node = new Operand;
+        new_node->number = num;
+        new_node->next = stackHead;
+        stackHead = new_node;
+    }
+
+    else{
+        Operand* new_node = new Operand;
+        new_node->number = num;
+        new_node->next = nullptr;
+        stackHead = new_node;
+    }
+
 }
 
 void RPNCalculator::pop(){
