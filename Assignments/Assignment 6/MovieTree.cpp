@@ -5,7 +5,7 @@ using namespace std;
 
 void inOrder(MovieNode* node);
 bool findMovieTraversal(MovieNode* root, string title);
-float averageTraversal(MovieNode* root, float sum, int count);
+float averageTraversal(MovieNode* root, float &sum, int& count);
 void queryMoviesTraversal(MovieNode* root, float rating , int year);
 void addNodeTraversal(MovieNode* root,MovieNode* node);
 
@@ -63,7 +63,9 @@ void MovieTree::queryMovies(float rating, int year){
 
 void MovieTree::averageRating(){
     // A function to print the average rating for all movies in the tree. 
-    float average = averageTraversal(root, 0, 0);
+    float sum = 0.000;
+    int count = 0;
+    float average = averageTraversal(root, sum, count);
     cout << "Average rating:" << average << endl;
 }
 
@@ -100,13 +102,14 @@ void addNodeTraversal(MovieNode* root, MovieNode* node){
 }
 
 bool findMovieTraversal(MovieNode* root, string title){
+    bool found;
     if (root != nullptr){
-        if (root->title != title){
-            if (root->left){
-                findMovieTraversal(root->left, title);
+        if (root->title != title && !found){
+            if (root->left && !found){
+                found = findMovieTraversal(root->left, title);
             }
-            if (root->right){
-                findMovieTraversal(root->right, title);
+            if (root->right && !found){
+                found = findMovieTraversal(root->right, title);
             }
         }
         else{
@@ -116,10 +119,9 @@ bool findMovieTraversal(MovieNode* root, string title){
             cout << "Title:"  << root->title << endl;
             cout << "Year:"  << root->year << endl;
             cout << "rating:"  << root->rating << endl;
-            return true;
+            found = true;
         }
     } 
-    // return false;
 }
 
 void queryMoviesTraversal(MovieNode* root, float rating , int year){
@@ -127,13 +129,25 @@ void queryMoviesTraversal(MovieNode* root, float rating , int year){
         if ((root->rating >= rating) && (root->year > year)){
             cout << root->title << "(" << root->year << ")" << root->rating << endl;
         }
+        if (root->left){
+            // if ((root->rating >= rating) && (root->year > year)){
+            // cout << root->title << "(" << root->year << ")" << root->rating << endl;
+            // }
+            queryMoviesTraversal(root->left, rating, year);   
+        }
+        if (root->right){
+            // if ((root->rating >= rating) && (root->year > year)){
+            // cout << root->title << "(" << root->year << ")" << root->rating << endl;
+            // }
+            queryMoviesTraversal(root->right, rating, year); 
+        }
     }
     else{
         cout << "Tree is Empty. Cannot query Movies" << endl;
     }
 }
 
-float averageTraversal(MovieNode* root, float sum, int count){
+float averageTraversal(MovieNode* root, float &sum, int &count){
 
     if (root == nullptr){
         return 0.0;
@@ -141,9 +155,12 @@ float averageTraversal(MovieNode* root, float sum, int count){
     else{
         sum += root->rating;
         count++;
-        averageTraversal(root->left, sum, count);
-        averageTraversal(root->right, sum , count);    
+        if (root->left){
+            averageTraversal(root->left, sum, count);
+        }
+        if (root->right){
+            averageTraversal(root->right, sum , count);
+        }
     }
-
     return sum/count;
 }
