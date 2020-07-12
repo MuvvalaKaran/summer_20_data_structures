@@ -130,15 +130,9 @@ void queryMoviesTraversal(MovieNode* root, float rating , int year){
             cout << root->title << "(" << root->year << ")" << root->rating << endl;
         }
         if (root->left){
-            // if ((root->rating >= rating) && (root->year > year)){
-            // cout << root->title << "(" << root->year << ")" << root->rating << endl;
-            // }
             queryMoviesTraversal(root->left, rating, year);   
         }
         if (root->right){
-            // if ((root->rating >= rating) && (root->year > year)){
-            // cout << root->title << "(" << root->year << ")" << root->rating << endl;
-            // }
             queryMoviesTraversal(root->right, rating, year); 
         }
     }

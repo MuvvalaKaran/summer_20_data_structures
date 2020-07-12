@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
     // get user input
     string ip_file_name;
     if (debug){
-        ip_file_name = "Movies.csv";
+        ip_file_name = "Documentaries.csv";
     }
     else{
         ip_file_name = argv[1];
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]){
 
             case 5:{
                 cout << "Goodbye!" << endl;
-                break;
+                return 0;
             }
         }
     }
